@@ -2,7 +2,6 @@ package it.unibo.oop.reactivegui02;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -56,12 +55,10 @@ public final class ConcurrentGUI extends JFrame {
                     SwingUtilities.invokeAndWait(() -> ConcurrentGUI.this.display.setText(nextText));
                     if(up){
                         this.counter++;
-
                     }
                     else{
                         this.counter--;
                     }
-                    
                     Thread.sleep(100);
                 } catch (InvocationTargetException | InterruptedException ex) {
                     ex.printStackTrace();
@@ -70,10 +67,16 @@ public final class ConcurrentGUI extends JFrame {
         }
 
         public void stopCounting() {
-            this.stop = true;
-            ConcurrentGUI.this.up.setEnabled(false);
-            ConcurrentGUI.this.down.setEnabled(false);
-            ConcurrentGUI.this.stop.setEnabled(false);
+            try{
+                this.stop = true;
+                SwingUtilities.invokeAndWait(() -> {
+                    ConcurrentGUI.this.up.setEnabled(false);
+                    ConcurrentGUI.this.down.setEnabled(false);
+                    ConcurrentGUI.this.stop.setEnabled(false);
+                });
+            }catch(InvocationTargetException | InterruptedException e){
+                e.printStackTrace();
+            }
         }
 
         public void setUp(){
